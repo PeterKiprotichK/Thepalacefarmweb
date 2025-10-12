@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -10,7 +11,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class TestimonialsComponent implements OnInit {
+
+export class TestimonialsComponent implements OnInit, OnDestroy {
   testimonials = [
     {
       name: 'Kamau Wanjiru',
@@ -128,11 +130,21 @@ export class TestimonialsComponent implements OnInit {
   ];
 
   currentIndex = 0;
+  private intervalId: any;
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    setInterval(() => {
-      this.nextTestimonial();
-    }, 3000);
+    if (isPlatformBrowser(this.platformId)) {
+      this.intervalId = setInterval(() => {
+        this.nextTestimonial();
+      }, 3000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   nextTestimonial(): void {

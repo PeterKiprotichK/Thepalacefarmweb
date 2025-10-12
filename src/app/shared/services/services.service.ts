@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 export interface Farm {
   _id?: string; // Optional, for update/delete
@@ -17,23 +18,28 @@ export class ServicesService {
   private baseUrl = 'http://localhost:3000'; // Your NestJS backend URL
   private readonly tokenKey = 'token'; // localStorage key for JWT token
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   // ---------- AUTHENTICATION METHODS ----------
   
   // Save JWT token (used after login or Google OAuth)
   setToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.tokenKey, token);
+    }
   }
 
   // Retrieve JWT token
   getToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) return null;
     return localStorage.getItem(this.tokenKey);
   }
 
   // Remove JWT token on logout
   clearToken(): void {
-    localStorage.removeItem(this.tokenKey);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.tokenKey);
+    }
   }
 
   // Check if user is logged in (token exists)
