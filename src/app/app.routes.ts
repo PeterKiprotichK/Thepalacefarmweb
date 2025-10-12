@@ -7,6 +7,7 @@ import { ServicesComponent } from './components/services/services.component';
 import { FarmComponent } from './components/farm/farm.component';
 import { BlogsComponent } from './components/blogs/blogs.component';
 import { BlogDetailComponent } from './components/blog-detail/blog-detail.component';
+import { ShopComponent } from './components/shop/shop.component';
 // Admin components removed (site is frontend-only)
 import { ErrorComponent } from './shared/error/error.component';
 
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'contact', title: 'Contact', component: ContactComponent },
   { path: 'services', title: 'Services', component: ServicesComponent },
   { path: 'farm', title: 'Our Farm', component: FarmComponent },
+  { path: 'shop', title: 'Farm Shop', component: ShopComponent },
   { path: 'blogs', title: 'Blogs', component: BlogsComponent },
   { path: 'blogs/:id', title: 'Blog Detail', component: BlogDetailComponent },
   { path: 'privacy', title: 'Privacy Policy', component: PrivacyComponent },
