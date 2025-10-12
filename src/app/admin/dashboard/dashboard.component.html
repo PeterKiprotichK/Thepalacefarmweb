@@ -1,0 +1,38 @@
+<!-- Static horizontal nav bar -->
+<header class="fixed top-16 left-0 right-0 bg-white shadow-md z-50 flex items-center justify-between h-14 px-6">
+
+  <!-- Centered navigation -->
+  <div class="absolute left-1/2 transform -translate-x-1/2">
+    <nav class="flex space-x-8 text-gray-700 text-sm font-medium items-center">
+      <a
+        routerLink="/dashboard/farmadmin"
+        routerLinkActive="text-blue-600 border-b-2 border-blue-600"
+        class="flex items-center hover:text-blue-600 transition pb-1"
+      >
+        <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h2l.4 2M7 10h10l1.4 2M9 21h6m-6 0..." />
+        </svg>
+        Farm
+      </a>
+
+      <a
+        routerLink="/dashboard/blog"
+        routerLinkActive="text-blue-600 border-b-2 border-blue-600"
+        class="flex items-center hover:text-blue-600 transition pb-1"
+      >
+        <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16h8M8 12h6m-7 8..." />
+        </svg>
+        Blog
+      </a>
+    </nav>
+  </div>
+
+  <!-- Optional placeholder to balance spacing -->
+  <div class="w-20"></div>
+</header>
+
+<!-- Main content area -->
+<main class="pt-14 px-6 overflow-y-auto min-h-screen bg-gray-100">
+  <router-outlet></router-outlet>
+</main>
