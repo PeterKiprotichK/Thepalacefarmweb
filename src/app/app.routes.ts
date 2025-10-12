@@ -7,17 +7,10 @@ import { ServicesComponent } from './components/services/services.component';
 import { FarmComponent } from './components/farm/farm.component';
 import { BlogsComponent } from './components/blogs/blogs.component';
 import { BlogDetailComponent } from './components/blog-detail/blog-detail.component';
-import { FarmadminComponent } from './admin/farmadmin/farmadmin.component';
-import { BlogComponent } from './admin/blog/blog.component';
-import { DashboardComponent } from './admin/dashboard/dashboard.component';
+// Admin components removed (site is frontend-only)
 import { ErrorComponent } from './shared/error/error.component';
 
-import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
-import { GoogleCallbackComponent } from './auth/google-callback/google-callback.component';
-import { LoginComponent } from './auth/login/login.component';
-import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
-import { UpdatePasswordComponent } from './auth/update-password/update-password.component';
-import { RegisterComponent } from './auth/register/register.component';
+// Auth components removed (frontend-only site)
 import { PrivacyComponent } from './shared/privacy/privacy.component';
 import { TermsComponent } from './shared/terms/terms.component';
 import { TestimonialsComponent } from './shared/testimonials/testimonials.component';
@@ -36,25 +29,7 @@ export const routes: Routes = [
   { path: 'terms', title: 'Terms of Service', component: TermsComponent },
   { path: 'testimonials', title: 'Testimonials', component: TestimonialsComponent },
 
-  // Auth pages
-  { path: 'login', title: 'Login', component: LoginComponent },
-  { path: 'register', title: 'Register', component: RegisterComponent },
-  { path: 'forgot-password', title: 'Forgot Password', component: ForgotPasswordComponent },
-  { path: 'reset-password', title: 'Reset Password', component: ResetPasswordComponent },
-  { path: 'update-password', title: 'Update Password', component: UpdatePasswordComponent },
-  { path: 'google-callback', title: 'Google Callback', component: GoogleCallbackComponent },
-
-  // Admin dashboard with nested routes
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    title: 'Dashboard', canActivate:[AuthGuard],
-    children: [
-      { path: 'farmadmin', title: 'Farm Admin', component: FarmadminComponent },
-      { path: 'blog', title: 'Blog Admin', component: BlogComponent },
-      { path: '', redirectTo: 'farmadmin', pathMatch: 'full' },
-    ]
-  },
+  // (auth/admin routes removed)
 
   // Wildcard - must come last
   { path: '**', title: 'Page Not Found', component: ErrorComponent }
