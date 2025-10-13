@@ -37,6 +37,18 @@ export class CartService {
   private cartCount = new BehaviorSubject<number>(0);
   public cartCount$ = this.cartCount.asObservable();
 
+  // UI state for cart panel (shared between header and cart component)
+  private cartOpen = new BehaviorSubject<boolean>(false);
+  public cartOpen$ = this.cartOpen.asObservable();
+
+  toggleCartOpen(): void {
+    this.cartOpen.next(!this.cartOpen.value);
+  }
+
+  setCartOpen(value: boolean): void {
+    this.cartOpen.next(value);
+  }
+
   // Sample products based on your data
   products: Product[] = [
     {
@@ -128,6 +140,38 @@ export class CartService {
     this.orders.next(list);
     this.persistOrders();
     return updated;
+  }
+
+  /**
+   * Place an order, generate a PDF receipt (client-side) and attach it to the order, then return the encoded WhatsApp message.
+   * This method avoids throwing on server; PDF generation runs only in a browser.
+   */
+  async checkoutViaWhatsApp(details: { name?: string; phone?: string; address?: string; coords?: { lat: number; lng: number } | null; instructions?: string | null } = {}): Promise<string> {
+    // place order synchronously
+    const message = this.placeOrder(details);
+
+    // attach receipt if in browser
+    if (typeof window !== 'undefined') {
+      try {
+        // get the saved order (most recent)
+        const saved = this.getOrdersSnapshot()[0];
+        if (saved) {
+          // dynamic import inside service to avoid top-level import in SSR
+          const { generateReceiptPdfDataUrl } = await import('../receipt/receipt.util');
+          try {
+            const dataUrl = await generateReceiptPdfDataUrl(saved);
+            this.attachReceiptToOrder(saved.id, dataUrl);
+          } catch (e) {
+            console.error('Failed to generate PDF receipt in checkoutViaWhatsApp', e);
+          }
+        }
+      } catch (e) {
+        // ignore
+        console.error('checkoutViaWhatsApp error', e);
+      }
+    }
+
+    return message;
   }
 
   // Orders management

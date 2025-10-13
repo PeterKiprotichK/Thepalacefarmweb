@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { CartService, CartItem } from '../../shared/services/cart.service';
 import { ToastService } from '../../shared/toast/toast.service';
 import { buildReceiptHtml, generateReceiptPdfDataUrl } from '../../shared/receipt/receipt.util';
@@ -10,7 +11,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReceiptModalComponent],
+  imports: [CommonModule, FormsModule, ReceiptModalComponent, RouterModule],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss']
 })
@@ -26,11 +27,21 @@ export class CartComponent implements OnInit {
   // inline receipt modal state
   showReceiptModal = false;
   receiptOrder: any = null;
+  // delivery form state for cart checkout
+  deliveryName = '';
+  deliveryPhone = '';
+  deliveryAddress = '';
+  deliveryInstructions = '';
+  deliveryCoords: { lat: number; lng: number } | null = null;
+  // mobile orders toggle
+  showOrdersMobile = false;
 
   constructor(private cartService: CartService, private toast: ToastService) {
     this.cartItems$ = this.cartService.cartItems$;
     this.cartCount$ = this.cartService.cartCount$;
     this.orders$ = this.cartService.orders$;
+    // subscribe to shared cart open state
+    this.cartService.cartOpen$.subscribe(v => this.isCartOpen = v);
   }
 
   ngOnInit(): void {
@@ -43,7 +54,7 @@ export class CartComponent implements OnInit {
   }
 
   toggleCart(): void {
-    this.isCartOpen = !this.isCartOpen;
+    this.cartService.toggleCartOpen();
   }
 
   removeFromCart(productId: string): void {
@@ -64,36 +75,49 @@ export class CartComponent implements OnInit {
 
   proceedToWhatsApp(): void {
     // Save the order first so the user has an order record (receipt) to attach payment to later.
-    try {
-      const message = this.cartService.placeOrder();
-      const saved = this.cartService.getOrdersSnapshot()[0];
-
-      if (saved) {
-        generateReceiptPdfDataUrl(saved).then(dataUrl => {
-          try { this.cartService.attachReceiptToOrder(saved.id, dataUrl); } catch (e) {}
-          const phoneNumber = '254713209541';
-          const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-          window.open(whatsappUrl, '_blank');
-          this.isCartOpen = false;
-          try { this.toast.success('Order placed and receipt generated. WhatsApp opened.'); } catch (e) {}
-        }).catch(err => {
-          console.error('Failed to generate receipt PDF', err);
-          const phoneNumber = '254713209541';
-          const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-          window.open(whatsappUrl, '_blank');
-          this.isCartOpen = false;
-          try { this.toast.error('Order placed but failed to generate PDF. Proceeding to WhatsApp.'); } catch (e) {}
-        });
-      } else {
-        const phoneNumber = '254713209541';
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-        this.isCartOpen = false;
-        try { this.toast.success('Order placed. WhatsApp opened.'); } catch (e) {}
-      }
-    } catch (e) {
-      try { this.toast.error('Failed to place order. Please try again.'); } catch (er) {}
+    // Require delivery details
+    if (!this.deliveryName || !this.deliveryPhone || !this.deliveryAddress) {
+      try { this.toast.error('Please provide name, phone and delivery address before checkout.'); } catch (e) {}
+      return;
     }
+
+    const details = {
+      name: this.deliveryName,
+      phone: this.deliveryPhone,
+      address: this.deliveryAddress,
+      coords: this.deliveryCoords || null,
+      instructions: this.deliveryInstructions || null
+    };
+
+    this.cartService.checkoutViaWhatsApp(details).then(message => {
+      const phoneNumber = '254713209541';
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+      window.open(whatsappUrl, '_blank');
+      this.isCartOpen = false;
+      try { this.toast.success('Order placed and WhatsApp opened.'); } catch (e) {}
+    }).catch(err => {
+      console.error('Checkout failed', err);
+      try { this.toast.error('Checkout failed. Please try again.'); } catch (e) {}
+    });
+  }
+
+  pinMyLocation(): void {
+    if (!navigator.geolocation) {
+      try { this.toast.error('Geolocation is not supported by your browser'); } catch (e) {}
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.deliveryCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        try { this.toast.success('Location pinned.'); } catch (e) {}
+      },
+      (err) => {
+        console.error('Geolocation error', err);
+        try { this.toast.error('Unable to retrieve your location. Please enable location services.'); } catch (e) {}
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   }
 
   openPayModal(orderId?: string): void {

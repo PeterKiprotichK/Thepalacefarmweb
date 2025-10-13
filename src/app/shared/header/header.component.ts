@@ -28,7 +28,8 @@ export class HeaderComponent {
   }
 
   toggleCart(): void {
-    this.isCartOpen = !this.isCartOpen;
+    // toggle the shared cart open state
+    this.cartService.toggleCartOpen();
   }
 
   closeCart(): void {
@@ -49,6 +50,13 @@ export class HeaderComponent {
   }
 
   proceedToWhatsApp(): void {
+    // If header delivery fields aren't filled, open cart panel for user to enter details there
+    if (!this.deliveryName || !this.deliveryPhone || !this.deliveryAddress) {
+      try { this.toast.info('Please open the cart and enter delivery name, phone and address before checkout.'); } catch (e) {}
+      this.cartService.setCartOpen(true);
+      return;
+    }
+
     const details = {
       name: this.deliveryName,
       phone: this.deliveryPhone,
@@ -56,34 +64,16 @@ export class HeaderComponent {
       coords: this.deliveryCoords || null,
       instructions: this.deliveryInstructions || null
     };
-    // placeOrder will save the order into localStorage and clear the cart
-    const message = this.cartService.placeOrder(details);
-    // find the saved order (most recent)
-    const saved = this.cartService.getOrdersSnapshot()[0];
-
-    // generate receipt PDF and attach to order before redirecting
-    if (saved && typeof window !== 'undefined') {
-      generateReceiptPdfDataUrl(saved).then(dataUrl => {
-        try { this.cartService.attachReceiptToOrder(saved.id, dataUrl); } catch (e) {}
-        const phoneNumber = '254713209541';
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-        this.closeCart();
-      }).catch(err => {
-        console.error('Failed to generate receipt PDF', err);
-        // still open WhatsApp but inform user
-        try { this.toast.error('Failed to generate receipt PDF. Proceeding to WhatsApp.'); } catch (e) {}
-        const phoneNumber = '254713209541';
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-        this.closeCart();
-      });
-    } else {
+    // centralized checkout flow: places order, generates & attaches receipt (if possible), then returns message
+    this.cartService.checkoutViaWhatsApp(details).then(message => {
       const phoneNumber = '254713209541';
       const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
       window.open(whatsappUrl, '_blank');
       this.closeCart();
-    }
+    }).catch(err => {
+      console.error('Checkout failed', err);
+      try { this.toast.error('Checkout failed. Please try again.'); } catch (e) {}
+    });
   }
 
   // Delivery form state (kept loose to avoid adding FormsModule reactive code)
