@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { ServicesService } from '../../shared/services/services.service';
+import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-blog',
@@ -23,7 +24,7 @@ export class BlogComponent implements OnInit {
   editing = false;
   showForm = false; // toggle blog form visibility
 
-  constructor(private servicesService: ServicesService, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private servicesService: ServicesService, private toast: ToastService, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     this.loadBlogs();
@@ -35,7 +36,7 @@ export class BlogComponent implements OnInit {
       error: (err) => {
         console.error('Error loading blogs:', err);
         if (isPlatformBrowser(this.platformId)) {
-          alert('Failed to load blogs');
+          try { this.toast.error('Failed to load blogs'); } catch (e) {}
         }
       },
     });
@@ -48,7 +49,7 @@ export class BlogComponent implements OnInit {
       this.servicesService.updateBlog(id, blogData).subscribe({
         next: () => {
           if (isPlatformBrowser(this.platformId)) {
-            alert('Blog updated successfully!');
+            try { this.toast.success('Blog updated successfully!'); } catch (e) {}
           }
           this.resetForm();
           this.loadBlogs();
@@ -56,7 +57,7 @@ export class BlogComponent implements OnInit {
         error: (err) => {
           console.error('Error updating blog:', err);
           if (isPlatformBrowser(this.platformId)) {
-            alert('Error updating blog: ' + (err.error?.message || err.message || 'Unknown error'));
+            try { this.toast.error('Error updating blog: ' + (err.error?.message || err.message || 'Unknown error')); } catch (e) {}
           }
         },
       });
@@ -64,7 +65,7 @@ export class BlogComponent implements OnInit {
       this.servicesService.submitBlog(blogData).subscribe({
         next: () => {
           if (isPlatformBrowser(this.platformId)) {
-            alert('Blog submitted successfully!');
+            try { this.toast.success('Blog submitted successfully!'); } catch (e) {}
           }
           this.resetForm();
           this.loadBlogs();
@@ -72,7 +73,7 @@ export class BlogComponent implements OnInit {
         error: (err) => {
           console.error('Error submitting blog:', err);
           if (isPlatformBrowser(this.platformId)) {
-            alert('Error submitting blog: ' + (err.error?.message || err.message || 'Unknown error'));
+            try { this.toast.error('Error submitting blog: ' + (err.error?.message || err.message || 'Unknown error')); } catch (e) {}
           }
         },
       });
@@ -99,14 +100,14 @@ export class BlogComponent implements OnInit {
       this.servicesService.deleteBlog(blogId).subscribe({
         next: () => {
           if (isPlatformBrowser(this.platformId)) {
-            alert('Blog deleted successfully!');
+            try { this.toast.success('Blog deleted successfully!'); } catch (e) {}
           }
           this.loadBlogs();
         },
         error: (err) => {
           console.error('Error deleting blog:', err);
           if (isPlatformBrowser(this.platformId)) {
-            alert('Error deleting blog: ' + (err.error?.message || err.message || 'Unknown error'));
+            try { this.toast.error('Error deleting blog: ' + (err.error?.message || err.message || 'Unknown error')); } catch (e) {}
           }
         },
       });

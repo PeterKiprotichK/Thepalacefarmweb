@@ -50,9 +50,21 @@
                   <button (click)="removeFromCart(item.product.id)" class="text-red-500 text-xs">Remove</button>
                 </div>
 
-                <div class="mt-3 flex items-center justify-between">
-                  <button (click)="clearCart()" class="text-sm text-gray-600 underline">Clear</button>
-                  <button (click)="proceedToWhatsApp()" class="bg-green-600 text-white px-3 py-2 rounded text-sm">Checkout</button>
+                <!-- Delivery details -->
+                <div class="mt-3 space-y-2">
+                  <input [(ngModel)]="deliveryName" placeholder="Full name" class="w-full border px-3 py-2 rounded text-sm" />
+                  <input [(ngModel)]="deliveryPhone" placeholder="Phone (e.g. +2547..)" class="w-full border px-3 py-2 rounded text-sm" />
+                  <input [(ngModel)]="deliveryAddress" placeholder="Delivery address" class="w-full border px-3 py-2 rounded text-sm" />
+                  <textarea [(ngModel)]="deliveryInstructions" placeholder="Delivery instructions (optional)" class="w-full border px-3 py-2 rounded text-sm"></textarea>
+                  <div class="flex items-center gap-2">
+                    <button (click)="pinMyLocation()" class="text-sm text-gray-600 underline">Pin my location</button>
+                    <div *ngIf="deliveryCoords" class="text-xs text-gray-500">Pinned: {{ deliveryCoords.lat | number:'1.5-5' }}, {{ deliveryCoords.lng | number:'1.5-5' }}</div>
+                  </div>
+
+                  <div class="mt-2 flex items-center justify-between">
+                    <button (click)="clearCart()" class="text-sm text-gray-600 underline">Clear</button>
+                    <button (click)="proceedToWhatsApp()" class="bg-green-600 text-white px-3 py-2 rounded text-sm">Checkout</button>
+                  </div>
                 </div>
               </div>
             </div>

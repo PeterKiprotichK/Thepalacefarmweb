@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-google-callback',
@@ -12,6 +13,7 @@ export class GoogleCallbackComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private toast: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -26,10 +28,10 @@ export class GoogleCallbackComponent implements OnInit {
         if (isPlatformBrowser(this.platformId)) {
           try {
             localStorage.setItem('access_token', token);
-            alert('✅ Login successful! Redirecting...');
+            try { this.toast.success('✅ Login successful! Redirecting...'); } catch (e) {}
           } catch (e) {
             console.error('❌ Error saving token to localStorage:', e);
-            alert('⚠️ Unable to store login session.');
+            try { this.toast.error('⚠️ Unable to store login session.'); } catch (e) {}
           }
         } else {
           console.warn('⚠️ localStorage not available, skipping token storage.');
@@ -41,14 +43,14 @@ export class GoogleCallbackComponent implements OnInit {
         }, 100);
       } else {
         if (isPlatformBrowser(this.platformId)) {
-          alert('❌ No token found. Login failed.');
+          try { this.toast.error('❌ No token found. Login failed.'); } catch (e) {}
         }
         this.router.navigate(['/login']);
       }
     }, error => {
       console.error('❌ Error reading query params:', error);
       if (isPlatformBrowser(this.platformId)) {
-        alert('❌ Unexpected error occurred during login.');
+        try { this.toast.error('❌ Unexpected error occurred during login.'); } catch (e) {}
       }
       this.router.navigate(['/login']);
     });

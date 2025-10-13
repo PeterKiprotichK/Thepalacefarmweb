@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
 import { ServicesService } from '../../shared/services/services.service';
+import { ToastService } from '../../shared/toast/toast.service';
 
 interface CreateFarmDto {
   title: string;
@@ -29,7 +30,7 @@ export class FarmadminComponent implements OnInit {
   editingFarmId: string | null = null;
   creatingNew = false;
 
-  constructor(private servicesService: ServicesService, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private servicesService: ServicesService, private toast: ToastService, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     this.fetchFarms();
@@ -72,7 +73,7 @@ export class FarmadminComponent implements OnInit {
   submitFarm(): void {
     if (!this.isValidUrl(this.newFarm.imageUrl)) {
       if (isPlatformBrowser(this.platformId)) {
-        alert('Please enter a valid image URL.');
+        try { this.toast.error('Please enter a valid image URL.'); } catch (e) {}
       }
       return;
     }
@@ -90,7 +91,7 @@ export class FarmadminComponent implements OnInit {
     action.subscribe({
       next: () => {
         if (isPlatformBrowser(this.platformId)) {
-          alert(`Farm ${this.editMode ? 'updated' : 'created'} successfully!`);
+          try { this.toast.success(`Farm ${this.editMode ? 'updated' : 'created'} successfully!`); } catch (e) {}
         }
         this.resetForm();
         this.fetchFarms();
@@ -98,7 +99,7 @@ export class FarmadminComponent implements OnInit {
       error: (err) => {
         console.error(`Error ${this.editMode ? 'updating' : 'creating'} farm:`, err);
         if (isPlatformBrowser(this.platformId)) {
-          alert(`Failed to ${this.editMode ? 'update' : 'create'} farm.`);
+          try { this.toast.error(`Failed to ${this.editMode ? 'update' : 'create'} farm.`); } catch (e) {}
         }
         this.loading = false;
       },
@@ -123,14 +124,14 @@ export class FarmadminComponent implements OnInit {
       this.servicesService.deleteFarm(id).subscribe({
         next: () => {
           if (isPlatformBrowser(this.platformId)) {
-            alert('Farm deleted successfully.');
+            try { this.toast.success('Farm deleted successfully.'); } catch (e) {}
           }
           this.fetchFarms();
         },
         error: (err) => {
           console.error('Error deleting farm:', err);
           if (isPlatformBrowser(this.platformId)) {
-            alert('Failed to delete farm.');
+            try { this.toast.error('Failed to delete farm.'); } catch (e) {}
           }
         },
       });
