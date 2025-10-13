@@ -117,8 +117,6 @@
 
 // Cart items scroll container
 .cart-items-scroll {
-  max-height: calc(100vh - 300px);
-  
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -359,10 +357,6 @@ input, textarea {
     max-height: 50vh;
   }
 
-  .cart-items-scroll {
-    max-height: calc(100vh - 350px);
-  }
-
   .mobile-back-bar {
     padding: 1rem;
     
@@ -403,10 +397,6 @@ input, textarea {
 
   .orders-scroll-container {
     max-height: calc(100vh - 160px);
-  }
-
-  .cart-items-scroll {
-    max-height: calc(100vh - 280px);
   }
 
   .checkout-btn {

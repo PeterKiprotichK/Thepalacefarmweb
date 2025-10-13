@@ -96,6 +96,10 @@ export class CartService {
     return this.orders.value;
   }
 
+  public getCartItemsSnapshot(): CartItem[] {
+    return this.cartItems.value;
+  }
+
   /**
    * Attach payment details to an existing order by id; persists and returns updated order
    */

@@ -73,6 +73,45 @@ export class CartComponent implements OnInit {
     this.cartService.clearCart();
   }
 
+  proceedToPayNow(): void {
+    // Save the order first and prompt for immediate M-Pesa payment
+    // Require delivery details
+    if (!this.deliveryName || !this.deliveryPhone || !this.deliveryAddress) {
+      try { this.toast.error('Please provide name, phone and delivery address before checkout.'); } catch (e) {}
+      return;
+    }
+
+    const currentCartItems = this.cartService.getCartItemsSnapshot();
+    const items = currentCartItems.map((i: CartItem) => ({ product: { ...i.product }, quantity: i.quantity }));
+    const total = this.cartService.getCartTotal();
+
+    const orderPayload = {
+      items,
+      total,
+      delivery: {
+        name: this.deliveryName,
+        phone: this.deliveryPhone,
+        address: this.deliveryAddress,
+        coords: this.deliveryCoords || null,
+        instructions: this.deliveryInstructions || null
+      }
+    };
+
+    try {
+      // Create order and immediately prompt for payment
+      const order = this.cartService.saveOrder(orderPayload);
+      
+      // Open payment modal for immediate payment
+      this.payOrderId = order.id;
+      this.payTransactionId = '';
+      this.isPayModalOpen = true;
+      try { this.toast.success('Order created! Please complete M-Pesa payment.'); } catch (e) {}
+    } catch (err) {
+      console.error('Order creation failed', err);
+      try { this.toast.error('Order creation failed. Please try again.'); } catch (e) {}
+    }
+  }
+
   proceedToWhatsApp(): void {
     // Save the order first so the user has an order record (receipt) to attach payment to later.
     // Require delivery details
@@ -132,13 +171,15 @@ export class CartComponent implements OnInit {
     const updated = this.cartService.attachPaymentToOrder(this.payOrderId, { method: 'M-PESA', providerNumber: '0769920741', transactionId: this.payTransactionId });
     if (updated) {
       // show toast confirmation and open printable receipt
-      try { this.toast.success(`Payment received for order ${updated.id}.`); } catch (e) {}
+      try { this.toast.success(`Payment confirmed! Order ${updated.id} is now complete.`); } catch (e) {}
       this.isPayModalOpen = false;
+      // Clear the cart after successful payment
+      this.cartService.clearCart();
       // show inline receipt modal
       this.receiptOrder = updated;
       this.showReceiptModal = true;
     } else {
-      try { this.toast.error('Failed to attach payment.'); } catch (e) {}
+      try { this.toast.error('Failed to confirm payment. Please try again.'); } catch (e) {}
     }
   }
 
