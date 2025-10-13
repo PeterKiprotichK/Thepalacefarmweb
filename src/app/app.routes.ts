@@ -19,17 +19,17 @@ import { AuthGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   // Public pages
-  { path: '', title: 'Home', component: HomeComponent },
-  { path: 'about', title: 'About', component: AboutComponent },
-  { path: 'contact', title: 'Contact', component: ContactComponent },
-  { path: 'services', title: 'Services', component: ServicesComponent },
-  { path: 'farm', title: 'Our Farm', component: FarmComponent },
-  { path: 'shop', title: 'Farm Shop', component: ShopComponent },
-  { path: 'blogs', title: 'Blogs', component: BlogsComponent },
-  { path: 'blogs/:id', title: 'Blog Detail', component: BlogDetailComponent },
-  { path: 'privacy', title: 'Privacy Policy', component: PrivacyComponent },
-  { path: 'terms', title: 'Terms of Service', component: TermsComponent },
-  { path: 'testimonials', title: 'Testimonials', component: TestimonialsComponent },
+  { path: '', title: 'The Palace Farm - Smart Farming Solutions & Quality Products | Kenya', component: HomeComponent },
+  { path: 'about', title: 'About The Palace Farm - Kenya\'s Premier Smart Farming Destination', component: AboutComponent },
+  { path: 'contact', title: 'Contact The Palace Farm - Get in Touch | Kenya', component: ContactComponent },
+  { path: 'services', title: 'Farm Services - Smart Farming Solutions | The Palace Farm Kenya', component: ServicesComponent },
+  { path: 'farm', title: 'Visit Our Farm - Sustainable Agriculture & Modern Farming | Kenya', component: FarmComponent },
+  { path: 'shop', title: 'Farm Shop - Quality Poultry, Garden Systems & Training | Kenya', component: ShopComponent },
+  { path: 'blogs', title: 'Farming Blogs & Agriculture Tips | The Palace Farm Kenya', component: BlogsComponent },
+  { path: 'blogs/:id', title: 'Blog Detail - Farming Insights | The Palace Farm', component: BlogDetailComponent },
+  { path: 'privacy', title: 'Privacy Policy | The Palace Farm Kenya', component: PrivacyComponent },
+  { path: 'terms', title: 'Terms of Service | The Palace Farm Kenya', component: TermsComponent },
+  { path: 'testimonials', title: 'Customer Testimonials & Reviews | The Palace Farm Kenya', component: TestimonialsComponent },
 
   // (auth/admin routes removed)
 

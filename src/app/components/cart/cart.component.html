@@ -55,6 +55,7 @@
             [src]="item.product.image || 'https://res.cloudinary.com/dpls4kcqa/image/upload/v1748249717/WhatsApp_Image_2025-05-26_at_11.28.39_81ad0955_mmaps3.jpg'" 
             [alt]="item.product.name"
             class="w-16 h-16 object-cover rounded-lg"
+            loading="lazy"
           >
           <div class="flex-1">
             <h4 class="font-semibold text-gray-900">{{ item.product.name }}</h4>
