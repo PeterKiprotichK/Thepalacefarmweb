@@ -52,11 +52,54 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- Blogs Page -->
+  <!-- Blog Posts - Agricultural Knowledge Hub -->
   <url>
     <loc>https://www.thepalacefarm.page/blogs</loc>
     <lastmod>2025-01-26</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Individual Blog Posts -->
+  <url>
+    <loc>https://www.thepalacefarm.page/blogs/smart-farming-technologies-kenya</loc>
+    <lastmod>2025-01-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thepalacefarm.page/blogs/hydroponic-farming-sustainable-agriculture</loc>
+    <lastmod>2025-01-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thepalacefarm.page/blogs/kienyeji-poultry-farming-guide</loc>
+    <lastmod>2025-01-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thepalacefarm.page/blogs/vertical-farming-urban-agriculture</loc>
+    <lastmod>2025-01-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thepalacefarm.page/blogs/sustainable-farming-climate-resilience</loc>
+    <lastmod>2025-01-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.thepalacefarm.page/blogs/agricultural-business-planning</loc>
+    <lastmod>2025-01-21</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
