@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +8,7 @@ import { ToastService } from '../../shared/toast/toast.service';
 import { buildReceiptHtml, generateReceiptPdfDataUrl } from '../../shared/receipt/receipt.util';
 import { ReceiptModalComponent } from '../../shared/receipt/receipt-modal.component';
 import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-cart',
@@ -193,9 +195,15 @@ export class CartComponent implements OnInit {
     try { this.toast.success(`Added ${order.items.length} items from order ${order.id} to your cart.`); } catch (e) {}
   }
 
+
   closeReceiptModal(): void {
     this.showReceiptModal = false;
     this.receiptOrder = null;
+  }
+
+  openReceiptModal(order: any): void {
+    this.receiptOrder = order;
+    this.showReceiptModal = true;
   }
 
   formatPrice(price: { min: number, max: number }): string {
