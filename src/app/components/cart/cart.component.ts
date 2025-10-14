@@ -168,7 +168,7 @@ export class CartComponent implements OnInit {
 
   confirmPayment(): void {
     if (!this.payOrderId || !this.payTransactionId) return;
-    const updated = this.cartService.attachPaymentToOrder(this.payOrderId, { method: 'M-PESA', providerNumber: '0769920741', transactionId: this.payTransactionId });
+    const updated = this.cartService.attachPaymentToOrder(this.payOrderId, { method: 'M-PESA', providerNumber: '0713209541', transactionId: this.payTransactionId });
     if (updated) {
       // show toast confirmation and open printable receipt
       try { this.toast.success(`Payment confirmed! Order ${updated.id} is now complete.`); } catch (e) {}
